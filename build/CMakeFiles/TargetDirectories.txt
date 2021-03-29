@@ -1,0 +1,9 @@
+/Users/alapan/learn-open-gl/assignment2/build/CMakeFiles/rebuild_cache.dir
+/Users/alapan/learn-open-gl/assignment2/build/CMakeFiles/edit_cache.dir
+/Users/alapan/learn-open-gl/assignment2/build/CMakeFiles/glad.dir
+/Users/alapan/learn-open-gl/assignment2/build/CMakeFiles/Hello-World.dir
+/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/CMakeFiles/rebuild_cache.dir
+/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/CMakeFiles/edit_cache.dir
+/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src/CMakeFiles/rebuild_cache.dir
+/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src/CMakeFiles/edit_cache.dir
+/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src/CMakeFiles/glfw.dir

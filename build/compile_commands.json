@@ -1,0 +1,92 @@
+[
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -I/Users/alapan/learn-open-gl/assignment2/libraries/glad/include -I/usr/local/Cellar/glm/0.9.9.8/include -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -o CMakeFiles/glad.dir/libraries/glad/src/glad.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glad/src/glad.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glad/src/glad.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/alapan/learn-open-gl/assignment2/source -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glad/include -I/usr/local/Cellar/glm/0.9.9.8/include -isystem /usr/local/include -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -std=gnu++11 -o CMakeFiles/Hello-World.dir/source/main.cpp.o -c /Users/alapan/learn-open-gl/assignment2/source/main.cpp",
+  "file": "/Users/alapan/learn-open-gl/assignment2/source/main.cpp"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/alapan/learn-open-gl/assignment2/source -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glad/include -I/usr/local/Cellar/glm/0.9.9.8/include -isystem /usr/local/include -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -F/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -std=gnu++11 -o CMakeFiles/Hello-World.dir/source/maze.cpp.o -c /Users/alapan/learn-open-gl/assignment2/source/maze.cpp",
+  "file": "/Users/alapan/learn-open-gl/assignment2/source/maze.cpp"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/context.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/context.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/context.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/init.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/init.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/init.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/input.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/input.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/input.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/monitor.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/monitor.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/monitor.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/vulkan.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/vulkan.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/vulkan.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/window.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/window.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/window.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/cocoa_init.m.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_init.m",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_init.m"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/cocoa_joystick.m.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_joystick.m",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_joystick.m"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/cocoa_monitor.m.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_monitor.m",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_monitor.m"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/cocoa_window.m.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_window.m",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_window.m"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/cocoa_time.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_time.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/cocoa_time.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/posix_thread.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/posix_thread.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/posix_thread.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/nsgl_context.m.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/nsgl_context.m",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/nsgl_context.m"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/egl_context.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/egl_context.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/egl_context.c"
+},
+{
+  "directory": "/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/include -I/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src -I/Users/alapan/learn-open-gl/assignment2/build/libraries/glfw/src -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -fPIC -Wall -std=c99 -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/osmesa_context.c",
+  "file": "/Users/alapan/learn-open-gl/assignment2/libraries/glfw/src/osmesa_context.c"
+}
+]
