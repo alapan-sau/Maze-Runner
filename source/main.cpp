@@ -16,7 +16,7 @@
 
 
 #define STB_IMAGE_IMPLEMENTATION
-# include "stb_image.h"
+#include "stb_image.h"
 
 
 struct edge
@@ -47,10 +47,10 @@ glm::vec3 imposterPosition;
 
 
     std::vector<float>
-    get_arena_location_from_coordinates(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, float player_size_x, float player_size_y)
+    get_arena_location_from_coordinates(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, glm::vec3 objectPosition)
 {
-    float dist_x = playerPosition.x - origin_x;
-    float dist_y = origin_y - playerPosition.y;
+    float dist_x = objectPosition.x - origin_x;
+    float dist_y = origin_y - objectPosition.y;
 
     int pos_y = (dist_x / scale_x);
     int pos_x = (dist_y / scale_y);
@@ -64,14 +64,14 @@ glm::vec3 imposterPosition;
     position.push_back(excess_x);
     position.push_back(excess_y);
 
-    std:: cout << dist_x << " "<< dist_y << std::endl;
+    // std:: cout << dist_x << " "<< dist_y << std::endl;
 
     return position;
 }
 
 void button_handler(GLFWwindow *window, std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, float player_size_x, float player_size_y){
 
-    std::vector<float> position = get_arena_location_from_coordinates( arena, row, col, scale_x, scale_y, origin_x,origin_y, player_size_x, player_size_y);
+    std::vector<float> position = get_arena_location_from_coordinates( arena, row, col, scale_x, scale_y, origin_x,origin_y, playerPosition);
     int pos_x = position[0];
     int pos_y = position[1];
 
@@ -87,26 +87,26 @@ void button_handler(GLFWwindow *window, std::vector<cell> arena[], int row, int 
     // if(excess_y + player_size_y > scale_y) return;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        std::cout << pos_x << " " << pos_y << " " << excess_x << " "<< excess_y << std::endl;
+        // std::cout << pos_x << " " << pos_y << " " << excess_x << " "<< excess_y << std::endl;
         if(arena[pos_x][pos_y].n==1 && (excess_y - playerSpeed) < 0){
-            std::cout << "CASE1" << std::endl;
+            // std::cout << "CASE1" << std::endl;
             return;
         }
         if (excess_x + player_size_x > scale_x){
-            std::cout << "CASE2" << std::endl;
+            // std::cout << "CASE2" << std::endl;
             if ((excess_y - playerSpeed) < 0)
                 return;
         }
         playerPosition.y += playerSpeed;
     }
     else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        std::cout << pos_x << " " << pos_y << " " << excess_x << " " << excess_y << std::endl;
+        // std::cout << pos_x << " " << pos_y << " " << excess_x << " " << excess_y << std::endl;
         if (arena[pos_x][pos_y].s == 1 && excess_y + player_size_y + playerSpeed > scale_y){
-            std::cout << "CASE3" << std::endl;
+            // std::cout << "CASE3" << std::endl;
             return;
         }
         if (excess_x + player_size_x > scale_x){
-            std::cout << "CASE4" << std::endl;
+            // std::cout << "CASE4" << std::endl;
             if (excess_y + player_size_y + playerSpeed > scale_y > scale_y)
                 return;
         }
@@ -115,28 +115,28 @@ void button_handler(GLFWwindow *window, std::vector<cell> arena[], int row, int 
 
     // left
     else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        std::cout << pos_x << " " << pos_y << " " << excess_x << " " << excess_y << std::endl;
+        // std::cout << pos_x << " " << pos_y << " " << excess_x << " " << excess_y << std::endl;
         if (arena[pos_x][pos_y].w == 1 && excess_x - playerSpeed < 0){
-            std::cout << "CASE5" << std::endl;
+            // std::cout << "CASE5" << std::endl;
 
             return;
         }
         if (excess_y + player_size_y > scale_y){
-            std::cout << "CASE6" << std::endl;
+            // std::cout << "CASE6" << std::endl;
             if (excess_x - playerSpeed < 0)
                 return;
         }
         playerPosition.x -= playerSpeed;
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        std::cout << pos_x << " " << pos_y << " " << excess_x << " " << excess_y << std::endl;
+        // std::cout << pos_x << " " << pos_y << " " << excess_x << " " << excess_y << std::endl;
         if (arena[pos_x][pos_y].e == 1 && excess_x + player_size_x +  playerSpeed > scale_x){
-            std::cout << "CASE7" << std::endl;
+            // std::cout << "CASE7" << std::endl;
 
             return;
         }
         if (excess_y + player_size_y > scale_y){
-            std::cout << "CASE8" << std::endl;
+            // std::cout << "CASE8" << std::endl;
             if (excess_x + player_size_x + playerSpeed > scale_x)
                 return;
         }
@@ -186,6 +186,67 @@ void floyd_warshall_path_reconstructor(std::vector <cell> arena[], std::vector <
                 }
             }
         }
+    }
+}
+
+
+int steps = 0;
+int direction = 0;
+void imposter_movement_handler(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, float imposter_size_x, float imposter_size_y, std::vector<int>imposter_path[])
+{
+    std::vector<float> position = get_arena_location_from_coordinates(arena, row, col, scale_x, scale_y, origin_x, origin_y, imposterPosition);
+    int pos_x = position[0];
+    int pos_y = position[1];
+    float excess_x = position[2];
+    float excess_y = position[3];
+
+    std::vector<float> target = get_arena_location_from_coordinates(arena, row, col, scale_x, scale_y, origin_x, origin_y, playerPosition);
+    int tar_x = target[0];
+    int tar_y = target[1];
+    float tar_excess_x = target[2];
+    float tar_excess_y = target[3];
+
+    // ALL THE MEASUREMENTS ARE TOP LEFT CORNER
+
+    if(pos_x == tar_x && pos_y == tar_y) return ;
+
+    if(!steps){
+        int ser_pos = pos_x * col + pos_y;
+        int ser_tar = tar_x * col + tar_y;
+
+        int ser_next = imposter_path[ser_pos][ser_tar];
+        if(ser_next - ser_pos == 1){// go right
+            direction = 1;
+        }
+        else if(ser_next - ser_pos == -1){// go left
+            direction = 2;
+        }
+        else if(ser_next - ser_pos == col){// go down
+            direction = 3;
+        }
+        else if(ser_next - ser_pos == -col){// go up
+            direction = 4;
+        }
+        else{
+            return;
+        }
+        steps=50;
+        return;
+    }
+    else{
+        if(direction == 1){// go right
+            imposterPosition.x+=(scale_x/50);
+        }
+        else if(direction == 2){// go left
+            imposterPosition.x-=(scale_x/50);
+        }
+        else if(direction == 3){// go down
+            imposterPosition.y-=(scale_y/50);
+        }
+        else{// go up
+            imposterPosition.y+=(scale_y/50);
+        }
+        steps--;
     }
 }
 
@@ -594,7 +655,7 @@ int main(){
     float imposter_size_x = scale_x * 0.6;
     float imposter_size_y = scale_y * 0.6;
 
-    imposterPosition = glm::vec3(origin_x, origin_y, 0.0f);
+    imposterPosition = glm::vec3(-origin_x - ((float)5/6) * scale_x, -origin_y+ ((float)5/6) * scale_y, 0.0f);
 
     float imposter[] = {
         0.0f, 0.0f,
@@ -640,6 +701,7 @@ int main(){
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
+        imposter_movement_handler(arena, row,col, scale_x, scale_y, origin_x, origin_y, imposter_size_x, imposter_size_y, imposter_path);
         model = glm::mat4(1.0f);
         model = glm::translate(model, imposterPosition);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
