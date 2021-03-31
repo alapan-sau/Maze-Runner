@@ -5,7 +5,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/alapan/learn-open-gl/assignment2/source/main.cpp" "/Users/alapan/learn-open-gl/assignment2/build/CMakeFiles/Hello-World.dir/source/main.cpp.o"
-  "/Users/alapan/learn-open-gl/assignment2/source/maze.cpp" "/Users/alapan/learn-open-gl/assignment2/build/CMakeFiles/Hello-World.dir/source/maze.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

@@ -4,8 +4,8 @@
 CMakeFiles/Hello-World.dir/source/main.cpp.o: ../libraries/glad/include/KHR/khrplatform.h
 CMakeFiles/Hello-World.dir/source/main.cpp.o: ../libraries/glad/include/glad/glad.h
 CMakeFiles/Hello-World.dir/source/main.cpp.o: ../libraries/glfw/include/GLFW/glfw3.h
+CMakeFiles/Hello-World.dir/source/main.cpp.o: ../source/gltext.h
 CMakeFiles/Hello-World.dir/source/main.cpp.o: ../source/main.cpp
-CMakeFiles/Hello-World.dir/source/main.cpp.o: ../source/stb_image.h
 CMakeFiles/Hello-World.dir/source/main.cpp.o: /usr/local/Cellar/glm/0.9.9.8/include/glm/common.hpp
 CMakeFiles/Hello-World.dir/source/main.cpp.o: /usr/local/Cellar/glm/0.9.9.8/include/glm/detail/_fixes.hpp
 CMakeFiles/Hello-World.dir/source/main.cpp.o: /usr/local/Cellar/glm/0.9.9.8/include/glm/detail/_swizzle.hpp
@@ -213,6 +213,4 @@ CMakeFiles/Hello-World.dir/source/main.cpp.o: /usr/local/Cellar/glm/0.9.9.8/incl
 CMakeFiles/Hello-World.dir/source/main.cpp.o: /usr/local/Cellar/glm/0.9.9.8/include/glm/vec3.hpp
 CMakeFiles/Hello-World.dir/source/main.cpp.o: /usr/local/Cellar/glm/0.9.9.8/include/glm/vec4.hpp
 CMakeFiles/Hello-World.dir/source/main.cpp.o: /usr/local/Cellar/glm/0.9.9.8/include/glm/vector_relational.hpp
-
-CMakeFiles/Hello-World.dir/source/maze.cpp.o: ../source/maze.cpp
 

@@ -15,8 +15,11 @@
 #define inf 100000
 
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+// #define STB_IMAGE_IMPLEMENTATION
+// #include "stb_image.h"
+
+#define GLT_IMPLEMENTATION
+#include "gltext.h"
 
 
 struct edge
@@ -45,6 +48,12 @@ struct cell
 glm::vec3 playerPosition;
 glm::vec3 imposterPosition;
 
+int imposter_visible = 1;
+int task1_visible = 1;
+int task2_visible = 1;
+
+int tasks = 0;
+int score = 0;
 
     std::vector<float>
     get_arena_location_from_coordinates(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, glm::vec3 objectPosition)
@@ -207,10 +216,12 @@ void imposter_movement_handler(std::vector<cell> arena[], int row, int col, floa
     float tar_excess_y = target[3];
 
     // ALL THE MEASUREMENTS ARE TOP LEFT CORNER
+    // printf("%d %d %d %d\n", pos_x, pos_y, tar_x, tar_y);
 
-    if(pos_x == tar_x && pos_y == tar_y) return ;
 
     if(!steps){
+        if(pos_x == tar_x && pos_y == tar_y) return ;
+
         int ser_pos = pos_x * col + pos_y;
         int ser_tar = tar_x * col + tar_y;
 
@@ -249,6 +260,91 @@ void imposter_movement_handler(std::vector<cell> arena[], int row, int col, floa
         steps--;
     }
 }
+
+std::vector<float> CreateCircleArray(float radius, float x, float y, int fragments)
+{
+     const float PI = 3.1415926f;
+
+     std::vector<float> result;
+
+     float increment = 2.0f * PI / fragments;
+
+     for (float currAngle = 0.0f; currAngle <= 2.0f * PI; currAngle += increment)
+     {
+        result.push_back(x + radius * cos(currAngle));
+        result.push_back(y + radius * sin(currAngle));
+     }
+
+     return result;
+}
+
+void handle_player_task1_collision(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, int task1_x,int task1_y){
+    std::vector<float>position = get_arena_location_from_coordinates(arena, row, col, scale_x, scale_y, origin_x, origin_y, playerPosition);
+    int pos_x = position[0];
+    int pos_y = position[1];
+    float excess_x = position[2];
+    float excess_y = position[3];
+
+    // printf("%d %d %d %d\n", pos_x, pos_y, task1_x ,task1_y);
+
+    if(task1_x == pos_x && task1_y == pos_y){
+        task1_visible=0;
+        imposter_visible = 0;
+        tasks++;
+    }
+    return;
+}
+
+
+void handle_player_task2_collision(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, int task2_x,int task2_y, int power_up_visible[], int obstacle_visible[]){
+    std::vector<float>position = get_arena_location_from_coordinates(arena, row, col, scale_x, scale_y, origin_x, origin_y, playerPosition);
+    int pos_x = position[0];
+    int pos_y = position[1];
+    float excess_x = position[2];
+    float excess_y = position[3];
+
+    // printf("%d %d %d %d\n", pos_x, pos_y, task1_x ,task1_y);
+
+    if(task2_x == pos_x && task2_y == pos_y){
+        task2_visible=0;
+        tasks++;
+        for(int i=0;i<2;i++){
+            power_up_visible[i]=1;
+            obstacle_visible[i]=1;
+
+        }
+    }
+    return;
+}
+
+void handle_power_up_collision(int index, int power_up_x[], int power_up_y[], int power_up_visible[], std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y){
+    std::vector<float>position = get_arena_location_from_coordinates(arena, row, col, scale_x, scale_y, origin_x, origin_y, playerPosition);
+    int pos_x = position[0];
+    int pos_y = position[1];
+    float excess_x = position[2];
+    float excess_y = position[3];
+
+    if(pos_x == power_up_x[index]  && pos_y == power_up_y[index]){
+        power_up_visible[index]=0;
+        score+=20;
+    }
+    return;
+}
+
+void handle_obstacle_collision(int index, int obstacle_x[], int obstacle_y[], int obstacle_visible[], std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y){
+    std::vector<float>position = get_arena_location_from_coordinates(arena, row, col, scale_x, scale_y, origin_x, origin_y, playerPosition);
+    int pos_x = position[0];
+    int pos_y = position[1];
+    float excess_x = position[2];
+    float excess_y = position[3];
+
+    if(pos_x == obstacle_x[index]  && pos_y == obstacle_y[index]){
+        obstacle_visible[index]=0;
+        score-=10;
+    }
+    return;
+}
+
 
 ////////////////////////////////////////////////////////////////////
 //////                  MAZE INITIALIZATION                   //////
@@ -404,9 +500,10 @@ const char *vertexShaderSource =
 // fragment shader source code
 const char *fragmentShaderSource="#version 330 core\n"
     "out vec4 FragColor;\n"
+    "uniform vec3 color; \n"
     "void main()\n"
     "{\n"
-    "       FragColor = vec4(0.0f,0.0f,0.0f,1.0f);\n"
+    "       FragColor = vec4(color,1.0f);\n"
     "}\n\0";
 
 
@@ -421,7 +518,7 @@ void errorCallback(int error, const char* description) {
 }
 
 // generate a shader from a source code
-unsigned int createShader( std :: string type){
+unsigned int createShader(std :: string type){
     unsigned int shader;
     // std :: cout << type << std::endl;
     if(type == "vertex")shader = glCreateShader(GL_VERTEX_SHADER);
@@ -471,33 +568,33 @@ unsigned int createShaderProgram(unsigned int vertexShader, unsigned int fragmen
     return shaderProgram;
 }
 
-// creates a texture
-unsigned int createTexture(){
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+// // creates a texture
+// unsigned int createTexture(){
+//     unsigned int texture;
+//     glGenTextures(1, &texture);
+//     glBindTexture(GL_TEXTURE_2D, texture);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load("./../source/wall.jpg", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        fprintf(stderr, "Unable to load texture 2 \n");
-        return 0;
-    }
-    stbi_image_free(data);
-    return texture;
-}
+//     int width, height, nrChannels;
+//     stbi_set_flip_vertically_on_load(true);
+//     unsigned char *data = stbi_load("./../source/wall.jpg", &width, &height, &nrChannels, 0);
+//     if (data)
+//     {
+//         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+//         glGenerateMipmap(GL_TEXTURE_2D);
+//     }
+//     else
+//     {
+//         fprintf(stderr, "Unable to load texture 2 \n");
+//         return 0;
+//     }
+//     stbi_image_free(data);
+//     return texture;
+// }
 
 // sets up a window using glfw
 GLFWwindow* initialize() {
@@ -512,7 +609,7 @@ GLFWwindow* initialize() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "InitGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 800, "InitGL", nullptr, nullptr);
     if (!window) {
         fprintf(stderr, "Unable to create GLFW window\n");
         glfwTerminate();
@@ -536,6 +633,7 @@ GLFWwindow* initialize() {
 int main(){
     // CODE STARTS
 
+
     // The callBack functions which handle all errors thrown by the glfw
     glfwSetErrorCallback(errorCallback);
 
@@ -544,33 +642,42 @@ int main(){
         return 0;
     }
 
+    // Text adding lib
+    gltInit();
+
+
     // Create the pipeline
     unsigned int vertexShader = createShader("vertex");
     unsigned int fragmentShader = createShader("fragment");
     unsigned int shaderProgram = createShaderProgram(vertexShader,fragmentShader);
-    glUseProgram(shaderProgram);
+
 
     // // to make the depth shit not happen
     // glEnable(GL_DEPTH_TEST);
 
     // create the arena
-    const int row = 15;
-    const int col = 20;
+    const int row = 12;
+    const int col = 12;
     const float origin_x = -0.8;
     const float origin_y = 0.8;
 
     float scale_x = (float)2 * (abs(origin_x)) / col;
     float scale_y = (float)2 * (abs(origin_y)) / row;
 
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<> distrib(0, row-1);
+
+
     std::vector<cell>
         arena[row];
 
     for (int i = 0; i < row; i++){
         for (int j = 0; j < col; j++){
-            float left_margin = origin_x+ i*scale_x;
+            float left_margin = origin_x+ j*scale_x;
             float right_margin = left_margin + scale_x;
-            float top_margin = origin_y - j * scale_y;
-            float bottom_margin = top_margin - scale_x;
+            float top_margin = origin_y - i * scale_y;
+            float bottom_margin = top_margin - scale_y;
             arena[i].push_back({i, j, 1, 1, 1, 1, left_margin, right_margin, top_margin, bottom_margin});
         }
     }
@@ -610,14 +717,94 @@ int main(){
 
     playerPosition = glm::vec3(-0.8f, +0.8f, 0.0f);
 
-    float player[] = {
-        0.0f, 0.0f,
-        player_size_x, -player_size_y,
-        0.0f, -player_size_y,
+    // float player[] = {
+    //     0.0f, 0.0f,
+    //     player_size_x, -player_size_y,
+    //     0.0f, -player_size_y,
 
-        0.0f, 0.0f,
-        player_size_x, -player_size_y,
-        player_size_x, 0.0f};
+    //     0.0f, 0.0f,
+    //     player_size_x, -player_size_y,
+    //     player_size_x, 0.0f};
+
+    int size_player = 24;
+
+
+    float player []= {
+        // bag
+        0.05f, -0.25,
+        0.25f,-0.25f,
+        0.05f, -0.7f,
+
+        0.05f, -0.7f,
+        0.25f, -0.25f,
+        0.25f, -0.7f,
+    // };
+
+    // float body[] ={
+        0.25f, -0.3f,
+        0.25f, -0.85f,
+        0.85f, -0.85,
+
+        0.25f, -0.3f, // -0.375
+        0.85f, -0.3f,
+        0.85f, -0.85f,
+    // };
+
+    // float leg1[]={
+        0.25f, -0.75f,
+        0.25f, -1.0f,
+        0.45f, -0.75f,
+
+        0.25f, -1.0f,
+        0.45f, -0.75f,
+        0.45f, -1.0f,
+    // };
+
+    // float leg2[]={
+        0.65f, -0.75f,
+        0.65f, -1.0f,
+        0.85f, -0.75f,
+
+        0.65, -1.0f,
+        0.85f, -0.75f,
+        0.85f, -1.0f,
+    };
+    float glass_pane[]={
+    // glass pane
+        0.5f, -0.3f,
+        0.5f, -0.65f,
+        0.95f, -0.3f,
+
+        0.95, -0.65f,
+        0.5f, -0.65f,
+        0.95f, -0.3f,
+    };
+
+    std::vector<float> head_vertices;
+    const float PI = 3.1415926f;
+    float increment = (2.0f * PI) / 100.0f;
+
+
+    for (float currAngle = 0.2f; currAngle <= 2.0f * PI ; currAngle += increment){
+        head_vertices.push_back(0.55 + 0.3 * cos(currAngle));
+        head_vertices.push_back(-0.3 + 0.3 * sin(currAngle));
+        // printf("%f\n", currAngle);
+    }
+
+    for(int i=0;i<2*size_player;i++){
+        if(i%2==0)player[i]= player[i] * player_size_x;
+        else player[i]= player[i] * player_size_y;
+    }
+    float head[head_vertices.size()];
+    for(int i=0;i<head_vertices.size();i++){
+        if(i%2==0)head[i] = head_vertices[i] * player_size_x;
+        else head[i] = head_vertices[i] * player_size_y;
+    }
+
+    for(int i=0;i<12;i++){
+        if(i%2==0)glass_pane[i] = glass_pane[i] * player_size_x;
+        else glass_pane[i] = glass_pane[i] * player_size_y;
+    }
 
     // Local Space Set Up for PLAYER
     unsigned int PBO, PAO;
@@ -632,6 +819,28 @@ int main(){
     glEnableVertexAttribArray(0);
 
 
+    unsigned int HBO, HAO;
+    glGenVertexArrays(1, &HAO);
+    glGenBuffers(1, &HBO);
+
+    glBindVertexArray(HAO);
+    glBindBuffer(GL_ARRAY_BUFFER, HBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(head), head, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+
+    unsigned int GBO, GAO;
+    glGenVertexArrays(1, &GAO);
+    glGenBuffers(1, &GBO);
+
+    glBindVertexArray(GAO);
+    glBindBuffer(GL_ARRAY_BUFFER, GBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glass_pane), glass_pane, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
     // FLOYD WARSHALL ALL SOURCE ALL SINK PATH
 
     std::vector<int> imposter_path[row*col];
@@ -643,75 +852,276 @@ int main(){
 
     floyd_warshall_path_reconstructor(arena, imposter_path, row, col);
 
-    // for (int i = 0; i < row * col; i++){
-    //     for (int j = 0; j < row * col; j++){
-    //         std::cout  << imposter_path[i][j]  << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-
-    // Create the player
+    // IMPOSTER
 
     float imposter_size_x = scale_x * 0.6;
     float imposter_size_y = scale_y * 0.6;
 
-    imposterPosition = glm::vec3(-origin_x - ((float)5/6) * scale_x, -origin_y+ ((float)5/6) * scale_y, 0.0f);
+    int imposter_row = distrib(gen);
+    int imposter_col = distrib(gen);
 
-    float imposter[] = {
-        0.0f, 0.0f,
-        imposter_size_x, -imposter_size_y,
-        0.0f, -imposter_size_y,
+    float l_margin = arena[imposter_row][imposter_col].left_margin;
+    float t_margin = arena[imposter_row][imposter_col].top_margin;
 
-        0.0f, 0.0f,
-        imposter_size_x, -imposter_size_y,
-        imposter_size_x, 0.0f};
+    float center_x = l_margin+ scale_x*0.5;
+    float center_y = t_margin - scale_y*0.5;
 
-    // Local Space Set Up for PLAYER
-    unsigned int IBO, IAO;
-    glGenVertexArrays(1, &IAO);
-    glGenBuffers(1, &IBO);
+    imposterPosition.x = center_x - imposter_size_x * 0.5;
+    imposterPosition.y = center_y + imposter_size_y * 0.5;
 
-    glBindVertexArray(IAO);
-    glBindBuffer(GL_ARRAY_BUFFER, IBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(imposter), imposter, GL_STATIC_DRAW);
+
+    // imposterPosition = glm::vec3(-origin_x - ((float)5/6) * scale_x, -origin_y+ ((float)5/6) * scale_y, 0.0f);
+
+    // TASK 1
+
+    int task1_row = distrib(gen);
+    int task1_col = distrib(gen);
+
+    l_margin = arena[task1_row][task1_col].left_margin;
+    t_margin = arena[task1_row][task1_col].top_margin;
+
+    center_x = l_margin+ scale_x*0.5;
+    center_y = t_margin- scale_y*0.5;
+
+
+    std::vector <float> circle_vertices = CreateCircleArray(scale_x * 0.2 , center_x , center_y , 100);
+    float circle[circle_vertices.size()];
+
+    for(int i=0;i<circle_vertices.size();i++) circle[i] = circle_vertices[i];
+
+    unsigned int CBO, CAO;
+    glGenVertexArrays(1, &CAO);
+    glGenBuffers(1, &CBO);
+
+    glBindVertexArray(CAO);
+    glBindBuffer(GL_ARRAY_BUFFER, CBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(circle), circle, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
+
+    // create Task2 POWER UP/OBS BUTTON
+    // std::uniform_int_distribution<> distrib(0, row-1);
+
+    int task2_row = distrib(gen);
+    int task2_col = distrib(gen);
+
+    l_margin = arena[task2_row][task2_col].left_margin;
+    t_margin = arena[task2_row][task2_col].top_margin;
+
+    center_x = l_margin+scale_x*0.5;
+    center_y = t_margin-scale_y*0.5;
+
+    std::vector <float> circle_vertices1 = CreateCircleArray(scale_x * 0.2 , center_x , center_y , 100);
+    float circle1[circle_vertices1.size()];
+    for(int i=0;i<circle_vertices1.size();i++) circle1[i] = circle_vertices1[i];
+
+    unsigned int CBO1, CAO1;
+    glGenVertexArrays(1, &CAO1);
+    glGenBuffers(1, &CBO1);
+
+    glBindVertexArray(CAO1);
+    glBindBuffer(GL_ARRAY_BUFFER, CBO1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(circle1), circle1, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+
+    //POWER_UPS/OBSTACLES
+
+    int power_up_x[2];
+    int power_up_y[2];
+    int power_up_visible[2];
+
+    int obstacle_x[2];
+    int obstacle_y[2];
+    int obstacle_visible[2];
+
+    for(int i=0;i<2;i++){
+        power_up_x[i] = distrib(gen);
+        power_up_y[i] = distrib(gen);
+        obstacle_x[i] = distrib(gen);
+        obstacle_y[i] = distrib(gen);
+        power_up_visible[i] = 0;
+        obstacle_visible[i] = 0;
+    }
+
+    std::vector <float> centred_circle_vertices = CreateCircleArray(scale_x * 0.2 , 0, 0 , 100);
+    float centred_circle[centred_circle_vertices.size()];
+    for(int i=0;i<centred_circle_vertices.size();i++) centred_circle[i] = centred_circle_vertices[i];
+
+
+    unsigned int CCBO, CCAO;
+    glGenVertexArrays(1, &CCAO);
+    glGenBuffers(1, &CCBO);
+
+    glBindVertexArray(CCAO);
+    glBindBuffer(GL_ARRAY_BUFFER, CCBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(centred_circle), centred_circle, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+
     // white screen
-    glClearColor(1, 1, 1, 1);
+    glClearColor(0, 0, 0, 0);
     while (!glfwWindowShouldClose(window)) {
+
+        glUseProgram(shaderProgram);
 
         button_handler(window, arena, row, col, scale_x, scale_y, origin_x, origin_y, player_size_x, player_size_y);
         //clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         int modelLoc = glGetUniformLocation(shaderProgram, "model");
+        int colorLoc = glGetUniformLocation(shaderProgram, "color");
+        // MATRIX
         glm::mat4 model = glm::mat4(1.0f);
+        glm::vec3 color = glm::vec3(1.0f, 1.0f, 0.0f);
+
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform3fv(colorLoc, 1, glm::value_ptr(color));
 
         glBindVertexArray(MAO);
         glDrawArrays(GL_LINES, 0, maze_edges.size()/2);
 
+        // PLAYER
         model = glm::translate(model, playerPosition);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+        color = glm::vec3(0.074f, 0.062f, 0.635f);
+        glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
         glBindVertexArray(PAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLES, 0, size_player);
+
+        color = glm::vec3(0.074f, 0.062f, 0.635f);
+        glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+        glBindVertexArray(HAO);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, head_vertices.size()/2);
 
 
-        imposter_movement_handler(arena, row,col, scale_x, scale_y, origin_x, origin_y, imposter_size_x, imposter_size_y, imposter_path);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, imposterPosition);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        color = glm::vec3(0.705f, 0.760f, 0.894f);
+        glUniform3fv(colorLoc, 1, glm::value_ptr(color));
 
-        glBindVertexArray(IAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(GAO);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+
+
+//
+
+        // IMPOSTER
+        if(imposter_visible){
+            imposter_movement_handler(arena, row,col, scale_x, scale_y, origin_x, origin_y, imposter_size_x, imposter_size_y, imposter_path);
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, imposterPosition);
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            color = glm::vec3(0.941f, 0.0f, 0.180f);
+            glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+            glBindVertexArray(PAO);
+            glDrawArrays(GL_TRIANGLES, 0, size_player);
+
+            color = glm::vec3(0.941f, 0.0f, 0.180f);
+            glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+            glBindVertexArray(HAO);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, head_vertices.size()/2);
+
+
+            color = glm::vec3(0.705f, 0.760f, 0.894f);
+            glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+            glBindVertexArray(GAO);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+        }
+
+        // TASK1
+        if(task1_visible==1){
+            handle_player_task1_collision(arena, row,col, scale_x, scale_y, origin_x, origin_y,task1_row, task1_col);
+            model = glm::mat4(1.0f);
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            color = glm::vec3(0.023f, 0.070f, 0.898f);
+            glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+            glBindVertexArray(CAO);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, circle_vertices.size()/2);
+        }
+
+        // TASK2
+        if(task2_visible==1){
+            handle_player_task2_collision(arena, row,col, scale_x, scale_y, origin_x, origin_y,task2_row, task2_col, power_up_visible, obstacle_visible);
+            model = glm::mat4(1.0f);
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            color = glm::vec3(0.058f, 1.0f, 0.070f);
+            glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+            glBindVertexArray(CAO1);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, circle_vertices1.size()/2);
+        }
+
+        // POWER_UP
+        for(int i=0;i<2;i++){
+            if(power_up_visible[i]){
+                handle_power_up_collision(i,power_up_x, power_up_y, power_up_visible, arena, row,col, scale_x, scale_y, origin_x, origin_y );
+                model = glm::mat4(1.0f);
+                glm::vec3 power_up_position;
+                power_up_position.x = arena[power_up_x[i]][power_up_y[i]].left_margin + scale_x*0.5;
+                power_up_position.y = arena[power_up_x[i]][power_up_y[i]].top_margin - scale_y*0.5;
+                power_up_position.z = 0;
+
+                model = glm::translate(model, power_up_position);
+                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+                color = glm::vec3(1.0f, 0.964f, 0.058f);
+                glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+                glBindVertexArray(CCAO);
+                glDrawArrays(GL_TRIANGLE_FAN, 0, centred_circle_vertices.size()/2);
+            }
+
+
+        }
+
+        // OBSTACLES
+        for(int i=0;i<2;i++){
+            if(obstacle_visible[i]){
+                handle_obstacle_collision(i,obstacle_x, obstacle_y, obstacle_visible, arena, row,col, scale_x, scale_y, origin_x, origin_y);
+                model = glm::mat4(1.0f);
+                glm::vec3 obstacle_position;
+                obstacle_position.x = arena[obstacle_x[i]][obstacle_y[i]].left_margin + scale_x*0.5;
+                obstacle_position.y = arena[obstacle_x[i]][obstacle_y[i]].top_margin - scale_y*0.5;
+                obstacle_position.z = 0;
+
+                model = glm::translate(model, obstacle_position);
+                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+                glBindVertexArray(CCAO);
+
+                color = glm::vec3(0.972f, 0.070f, 0.133f);
+                glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+
+                glDrawArrays(GL_TRIANGLE_FAN, 0, centred_circle_vertices.size()/2);
+            }
+        }
+
+        char dialogue[1000];
+        sprintf(dialogue,"Score:%d\nTasks:%d/2", score, tasks);
+        GLTtext *text = gltCreateText();
+        gltSetText(text,dialogue);
+        gltBeginDraw();
+        gltColor(0.0f, 1.0f, 1.0f, 0.0f);
+        gltDrawText2D(text, -1.0f, 1.0f, 3.0f);
+        gltEndDraw();
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-
     }
 
     glDeleteVertexArrays(1, &MAO);

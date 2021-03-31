@@ -5,8 +5,8 @@ CMakeFiles/Hello-World.dir/source/main.cpp.o
  ../libraries/glad/include/KHR/khrplatform.h
  ../libraries/glad/include/glad/glad.h
  ../libraries/glfw/include/GLFW/glfw3.h
+ /Users/alapan/learn-open-gl/assignment2/source/gltext.h
  /Users/alapan/learn-open-gl/assignment2/source/main.cpp
- /Users/alapan/learn-open-gl/assignment2/source/stb_image.h
  /usr/local/Cellar/glm/0.9.9.8/include/glm/common.hpp
  /usr/local/Cellar/glm/0.9.9.8/include/glm/detail/_fixes.hpp
  /usr/local/Cellar/glm/0.9.9.8/include/glm/detail/_swizzle.hpp
@@ -214,5 +214,3 @@ CMakeFiles/Hello-World.dir/source/main.cpp.o
  /usr/local/Cellar/glm/0.9.9.8/include/glm/vec3.hpp
  /usr/local/Cellar/glm/0.9.9.8/include/glm/vec4.hpp
  /usr/local/Cellar/glm/0.9.9.8/include/glm/vector_relational.hpp
-CMakeFiles/Hello-World.dir/source/maze.cpp.o
- /Users/alapan/learn-open-gl/assignment2/source/maze.cpp

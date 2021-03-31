@@ -222,33 +222,6 @@ source/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello-World.dir/build.make CMakeFiles/Hello-World.dir/source/main.cpp.s
 .PHONY : source/main.cpp.s
 
-source/maze.o: source/maze.cpp.o
-
-.PHONY : source/maze.o
-
-# target to build an object file
-source/maze.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello-World.dir/build.make CMakeFiles/Hello-World.dir/source/maze.cpp.o
-.PHONY : source/maze.cpp.o
-
-source/maze.i: source/maze.cpp.i
-
-.PHONY : source/maze.i
-
-# target to preprocess a source file
-source/maze.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello-World.dir/build.make CMakeFiles/Hello-World.dir/source/maze.cpp.i
-.PHONY : source/maze.cpp.i
-
-source/maze.s: source/maze.cpp.s
-
-.PHONY : source/maze.s
-
-# target to generate assembly for a file
-source/maze.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello-World.dir/build.make CMakeFiles/Hello-World.dir/source/maze.cpp.s
-.PHONY : source/maze.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -266,9 +239,6 @@ help:
 	@echo "... source/main.o"
 	@echo "... source/main.i"
 	@echo "... source/main.s"
-	@echo "... source/maze.o"
-	@echo "... source/maze.i"
-	@echo "... source/maze.s"
 .PHONY : help
 
 
