@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <random>
 #include <ctime>
+#include <chrono>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -54,6 +55,9 @@ int task2_visible = 1;
 
 int tasks = 0;
 int score = 0;
+
+int game_won = 0;
+int game_lost = 0;
 
     std::vector<float>
     get_arena_location_from_coordinates(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y, glm::vec3 objectPosition)
@@ -345,6 +349,24 @@ void handle_obstacle_collision(int index, int obstacle_x[], int obstacle_y[], in
     return;
 }
 
+
+void handle_imposter_player_collision( float player_size_x, float player_size_y){
+    if(pow((playerPosition.x - imposterPosition.x),2) + pow((playerPosition.y - imposterPosition.y),2) <= pow(player_size_x,2)){
+        game_lost =1;
+    }
+    return;
+}
+
+
+void handle_game_winning(std::vector<cell> arena[], int row, int col, float scale_x, float scale_y, float origin_x, float origin_y){
+    std::vector<float>position = get_arena_location_from_coordinates(arena, row, col, scale_x, scale_y, origin_x, origin_y, playerPosition);
+    int pos_x = position[0];
+    int pos_y = position[1];
+    float excess_x = position[2];
+    float excess_y = position[3];
+
+    if(pos_x==row-1 && pos_y==col-1) game_won=1;
+}
 
 ////////////////////////////////////////////////////////////////////
 //////                  MAZE INITIALIZATION                   //////
@@ -965,15 +987,82 @@ int main(){
     glEnableVertexAttribArray(0);
 
 
+
+    // WINNING BOX
+
+    float win[] ={
+        arena[row-1][col-1].left_margin, arena[row-1][col-1].top_margin,
+        arena[row-1][col-1].left_margin, arena[row-1][col-1].bottom_margin,
+        arena[row-1][col-1].right_margin, arena[row-1][col-1].top_margin,
+
+        arena[row-1][col-1].left_margin, arena[row-1][col-1].bottom_margin,
+        arena[row-1][col-1].right_margin, arena[row-1][col-1].top_margin,
+        arena[row-1][col-1].right_margin, arena[row-1][col-1].bottom_margin,
+    };
+
+    unsigned int WBO, WAO;
+    glGenVertexArrays(1,  &WAO);
+    glGenBuffers(1,  &WBO);
+
+    glBindVertexArray(WAO);
+    glBindBuffer(GL_ARRAY_BUFFER, WBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(win), win, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+
+
+
+    auto start_time = std::chrono::system_clock::now();
     // white screen
     glClearColor(0, 0, 0, 0);
     while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        auto current_time = std::chrono::system_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds> (current_time - start_time).count();
+        if(duration >= 200) game_lost=1;
+
+        if(game_lost){
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            char dialogue[1000];
+            sprintf(dialogue,"Score:%d\nTasks:%d/2\n\n\n\n You Lost", score, tasks);
+            GLTtext *text = gltCreateText();
+            gltSetText(text,dialogue);
+            gltBeginDraw();
+            gltColor(0.0f, 1.0f, 1.0f, 0.0f);
+            gltDrawText2D(text, -1.0f, 1.0f, 3.0f);
+            gltEndDraw();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            sleep(3);
+            return 0;
+        }
+        if(game_won){
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            char dialogue[1000];
+            sprintf(dialogue,"Score:%d\nTasks:%d/2\n\n\n\n You Won", score, tasks);
+            GLTtext *text = gltCreateText();
+            gltSetText(text,dialogue);
+            gltBeginDraw();
+            gltColor(0.0f, 1.0f, 1.0f, 0.0f);
+            gltDrawText2D(text, -1.0f, 1.0f, 3.0f);
+            gltEndDraw();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            sleep(3);
+            return 0;
+        }
 
         glUseProgram(shaderProgram);
 
         button_handler(window, arena, row, col, scale_x, scale_y, origin_x, origin_y, player_size_x, player_size_y);
         //clear the screen
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         int modelLoc = glGetUniformLocation(shaderProgram, "model");
         int colorLoc = glGetUniformLocation(shaderProgram, "color");
@@ -1015,6 +1104,7 @@ int main(){
 
         // IMPOSTER
         if(imposter_visible){
+            handle_imposter_player_collision(player_size_x, player_size_y);
             imposter_movement_handler(arena, row,col, scale_x, scale_y, origin_x, origin_y, imposter_size_x, imposter_size_y, imposter_path);
             model = glm::mat4(1.0f);
             model = glm::translate(model, imposterPosition);
@@ -1110,8 +1200,19 @@ int main(){
             }
         }
 
+        if(tasks==2){
+            handle_game_winning(arena, row,col, scale_x, scale_y, origin_x, origin_y);
+            model = glm::mat4(1.0f);
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+            glBindVertexArray(WAO);
+
+            color = glm::vec3(0.0f, 1.0f, 0.0f);
+            glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+
         char dialogue[1000];
-        sprintf(dialogue,"Score:%d\nTasks:%d/2", score, tasks);
+        sprintf(dialogue,"Score:%d\nTasks:%d/2 Duration:%lld", score, tasks, std::max(0ll, 200-duration));
         GLTtext *text = gltCreateText();
         gltSetText(text,dialogue);
         gltBeginDraw();
