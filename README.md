@@ -34,7 +34,7 @@ $ make
 
 4. There are both positive and negative rewarding power ups
 
-5. The game is inspired from the propular mobile game Among Us
+5. The game is inspired from the popular mobile game Among Us
 
 ## Scoring Policy
 
