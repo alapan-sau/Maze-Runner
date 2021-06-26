@@ -3,7 +3,7 @@
 
 ## How to run
 
-1. Run `https://github.com/alapan-sau/Maze-Runner` to download the game.
+1. Run `git clone https://github.com/alapan-sau/Maze-Runner` to download the game.
 
 2. Run `mkdir build ; cd build` inside the repository
 
